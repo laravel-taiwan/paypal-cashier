@@ -10,6 +10,10 @@ class PaypalCreditCardTest extends TestCase
 	public function setUp()
 	{
 		parent::setUp();
+
+		// migrate package table
+		Artisan::call('migrate', array('--bench'	=>	'beyond/paypal-cashier'));
+
 	}
 
 	public function tearDown()

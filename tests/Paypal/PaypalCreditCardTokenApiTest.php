@@ -52,9 +52,9 @@ class PaypalCreditCardTokenApiTest extends TestCase
 			// 'Authorization'	=>	'Bearer ASExehBlunSTszcSEhc__w7P81AFACksp2WaMZ1u0LlB6TCpDF6j8whNZLed:EOvU8hB8XRJzfdwDYzJ6m-nZnWpmXgpQktqYIEfbvFi4VuPW8JXylxMKF7fU',
 			'auth' =>  ['EOJ2S-Z6OoN_le_KS1d75wsZ6y0SFdVsY9183IvxFyZp','EClusMEUk8e9ihI7ZdVLF5cZ6y0SFdVsY9183IvxFyZp'],
 			'headers'	=>	[
-				'Content-Type'		=>	'application/json',
-				'Accept'			=>	'application/json',
-				'Accept-Language' 	=>	'en_US',
+				'Content-Type: application/json',
+				'Accept: application/json',
+				'Accept-Language: en_US',
 				// 'Authorization'		=>	'Bearer EOJ2S-Z6OoN_le_KS1d75wsZ6y0SFdVsY9183IvxFyZp','EClusMEUk8e9ihI7ZdVLF5cZ6y0SFdVsY9183IvxFyZp',
 				// 'grant_type'		=>	'client_credentials'
 			],
@@ -103,8 +103,8 @@ class PaypalCreditCardTokenApiTest extends TestCase
 
 			'auth'	=>	['ASExehBlunSTszcSEhc__w7P81AFACksp2WaMZ1u0LlB6TCpDF6j8whNZLed', 'EOvU8hB8XRJzfdwDYzJ6m-nZnWpmXgpQktqYIEfbvFi4VuPW8JXylxMKF7fU'],
 			'headers'	=>	[
-				'Accept'			=>	'application/json', 
-				'Accept-Language'	=>	'en_US'
+				'Accept: application/json', 
+				'Accept-Language: en_US'
 			],
 
 			'body'	=>	[
