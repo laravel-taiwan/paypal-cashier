@@ -181,7 +181,7 @@ class PaypalAccountStatusTest extends TestCase
 
 		$request = $client->createRequest('POST', 'https://api-3t.sandbox.paypal.com/nvp', [
 
-			'body'	=>	$body, 
+			'body'	=>	$body,
 
 			'config'	=>	
 			[
