@@ -10,6 +10,9 @@ use PayPal\Api\MerchantPreferences;
 use PayPal\Api\Currency;
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
+use PayPal\Api\PatchRequest;
+use PayPal\Api\Patch;
+use PayPal\Common\PayPalModel;
 
 class PaypalPlanRestfulSdkTest extends TestCase
 {
@@ -88,6 +91,33 @@ class PaypalPlanRestfulSdkTest extends TestCase
     }
 
     /**
+     * Provide new plan to whom needs it.
+     *
+     * @return Beyond\PaypalCashier\Plan
+     */
+    protected function newPlanProvider()
+    {
+        // create new plan
+        $plan = new Plan;
+
+        $plan = new Plan([
+            'name'          =>  'sample plan',
+            'type'          =>  'fixed',
+            'description'   =>  'sample plan'
+        ]);
+
+        $paymentDefinition = $this->paymentDefinationProvider();
+
+        $merchantPreference = $this->merchantPreferenceProvider();
+
+        $apiContext = $this->apiContextProvider();
+
+        $plan->withPaymentDefinations($paymentDefinition)->withMerchantPreferences($merchantPreference)->createPlan($apiContext);
+
+        return $plan;
+    }
+
+    /**
      * ApiContext instance provider.
      *
      * @return PayPal\Api\
@@ -124,11 +154,6 @@ class PaypalPlanRestfulSdkTest extends TestCase
         $this->assertInstanceOf('Beyond\PaypalCashier\Plan', $plan);
     }
 
-    public function test_make_api_context_obj()
-    {
-
-    }
-    
     /**
      * Test create new plan.
      *
@@ -190,12 +215,35 @@ class PaypalPlanRestfulSdkTest extends TestCase
     }
 
     /**
+     * Test update existing plan.
      *
-     *
-     *
+     * Tests:
+     *      1. makesure specified plan has been updated.
      */
-    public function test_update_existed_plan()
+    public function test_update_existing_plan()
     {
+        $newPlan = $this->newPlanProvider();
+        $apiContext = $this->apiContextProvider();
+
+        // initialize PayPal\Api\PatchRequest
+        $patch = new Patch();
+
+
+        $value = new PayPalModel('{
+           "state":"ACTIVE"
+         }');
+
+        $patch->setOp('replace')
+            ->setPath('/')
+            ->setValue($value);
+        $patchRequest = new PatchRequest();
+        $patchRequest->addPatch($patch);
+
+        $newPlan->updatePlan($patchRequest, $apiContext);
+
+
+        // 1.
+        $this->assertEquals('ACTIVE', $newPlan->getState());
 
     }
 

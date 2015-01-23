@@ -22,6 +22,7 @@ use PayPal\Api\Plan as PaypalPlan;
  * @author Bryan Huang
  * @version 0.0.0
  *
+ * ＠todo 寫一個 autoSycPlan 方法來偵測 Beyond\PaypalCashier\Plan 跟 Paypal\Api\Plan 屬性是否相同
  * 將 plan 資訊存入到 Database 中
  * $plan = new Plan // Beyond\Paypal\Plan
  * $plan->setPaymentDefinitions([$paymentDefination]);
@@ -111,7 +112,7 @@ class Plan extends Model
     public function newPlan(array $attributes = array())
     {
         // 取得新的 Paypal\Api\PaypalPlan
-        $paypalPlan = $this->getNewPaypalPlan();
+        $paypalPlan = $this->getNewPaypalPlan($attributes);
 
         $newPlan = $this->newInstance($attributes);
 
@@ -237,7 +238,26 @@ class Plan extends Model
     }
 
     /**
+     * Get the state of current plan.
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->getSdkPlan()->getState();
+    }
+
+    /**
      * Create a new plan.
+     *
+     * $plan = new Plan([...]); // new Plan instance
+     *
+     * - 只有將基本的 plan 資料存入到 database 中。並沒有使用 Paypal restful 建立 plan
+     * $plan->save();
+     * $plan->createPlan($apiContext) // 這樣才會建立
+     *
+     * - 建立
+     * $plan->withPaymentDefination(...)->withMerchantPreference(...)->createPlan($apiContext);
      *
      * @todo Handle errors
      * @param Paypal\Rest\ApiContext
@@ -245,12 +265,13 @@ class Plan extends Model
      */
     public function createPlan($apiContext)
     {
-        // request api 取得 plan
+        // request api 取得 plan.
         $plan = $this->getSdkPlan()->create($apiContext);
 
-        // 轉換資料格式
+        // 轉換資料格式.
         $attributes = PlanTransformer::transform($plan);
 
+        // fillin attributes and save into database.
         $this->fill($attributes)->save();
 
         return $this;
@@ -259,20 +280,64 @@ class Plan extends Model
     /**
      * Update plan information. It seems one the state can be updated. Thus, as of Database, we only need to update "state"
      *
-     * @param
+     * $plan = Plan::find(1);
+     * $plan->updatePlan($patchRequest, $apiContext);
+     *
+     * $plan; //existing plan
+     *
+     * @param PayPal\Api\PatchRequest
+     * @param Paypal\Api\ApiContext
+     * @param boolean If $sync is set to true, plan instance will be renewed along with database.
+     * @return boolean
      */
-    public function updatePlan($pathRequest, $apiContext)
+    public function updatePlan($patchRequest, $apiContext, $sync = TRUE)
     {
-        // request paypal restful api
-        // get Paypal\Api\Plan
-        $apiPlan= $this->getSdkPlan()->update($pathRequest, $apiContext);
+        // request paypal restful api, get updated Paypal\Api\Plan
+        $updateStatus = $this->getSdkPlan()->update($patchRequest, $apiContext);
 
-        // sync new plan
-        $attributes = PlanTransformer::transform($plan);
-//        $attributes = $this->syncPlan($apiPlan);
+        if($updateStatus and $sync)
+        {
+            // retrieve plan by plan id, Beyond\PaypalCashier\Plan is returned.
+            $plan = $this->getByPlanId($this->getId(), $apiContext);
 
-        // save instance
-        $this->fill($attributes)->save();
+            // @todo 如果要同步 model database 必定會動到。
+            $this->fill($plan->toArray())->save();
 
+            $this->setSdkPlan($plan->getSdkPlan());
+
+        }
+
+        return $updateStatus;
+    }
+
+    /**
+     * Get plan by unique plan id.
+     *
+     * $plan = new Plan
+     *
+     * $plan->getByPlanId($id, $apiContext)
+     * 兩種做法：
+     *  1. $plan 本身 filling attributes
+     *  2. 建立新的 plan 再 filling attributes - Laravel 使用這種方法
+     *
+     * @param string $id
+     * @param Beyond\PaypalCashier\ApiContext
+     * @return Beyond\PaypalCashier\Plan
+     */
+    public function getByPlanId($id, $apiContext)
+    {
+        // 使用 Paypal\Api\Plan 中的 static method get.
+        $sdkPlan = forward_static_call_array([$this->getSdkPlan(), 'get'], [$id, $apiContext]);
+
+        // 取得回傳的 Paypal\Api\Plan 後, 我們需要 initialize Beyond\PaypalCashier\Plan
+        $attributes = PlanTransformer::transform($sdkPlan);
+
+        // get a new instance of Beyond\PaypalCashier\Plan
+        $plan = $this->newPlan($attributes);
+
+        // set sdk plan
+        $plan->setSdkPlan($sdkPlan);
+
+        return $plan;
     }
 }
