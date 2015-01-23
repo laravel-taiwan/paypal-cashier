@@ -169,11 +169,6 @@ class PlanRepository
      */
     public function getPlanById($id)
     {
-        // 使用 Paypal\Api\Plan 中的 sataic method get.
-        $plan = forward_static_call_array([$this->plan->getSdkPlan(), 'get'], [$id, $this->getApiContext()]);
-
-        // 取得回傳的 Paypal\Api\Plan 後, 我們需要 initialize Beyond\PaypalCashier\Plan
-        return $this->plan = $this->plan->newPlan($plan->toArray());
-
+        return $this->plan->getByPlanId($id, $this->getApiContext());
     }
 }
