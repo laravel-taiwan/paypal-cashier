@@ -247,6 +247,50 @@ class PaypalPlanRestfulSdkTest extends TestCase
 
     }
 
+    public function test_create_sample_plan_for_subscription()
+    {
+        $samplePlan = new Plan([
+            'name'          =>  'test plan',
+            'type'          =>  'fixed',
+            'description'   =>  'for testing purpose'
+        ]);
+
+        $paymentDefination = $this->paymentDefinationProvider();
+        $merchantPreferences= $this->merchantPreferenceProvider();
+        $apiContext = $this->apiContextProvider();
+
+        $samplePlan = $samplePlan->withPaymentDefinations($paymentDefination)->withMerchantPreferences($merchantPreferences)->createPlan($apiContext);
+
+        // update sample plan state to active
+        $patch = new Patch();
+
+        $value = new PayPalModel('{
+           "state":"ACTIVE"
+         }');
+
+        $patch->setOp('replace')
+            ->setPath('/')
+            ->setValue($value);
+        $patchRequest = new PatchRequest();
+        $patchRequest->addPatch($patch);
+
+
+        $samplePlan->updatePlan($patchRequest, $apiContext);
+
+        var_dump($samplePlan);
+        die;
+    }
+
+    public function test_activate_sample_plan()
+    {
+
+
+
+
+
+
+    }
+
     public function test_plan_repository_save_plan_method()
     {
         $plan = new Plan;
