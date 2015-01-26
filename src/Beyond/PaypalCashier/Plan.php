@@ -76,7 +76,7 @@ class Plan extends Model
      * @param array $attributes
      * @return Paypal\Api\PaypalPlan
      */
-    protected function getNewPaypalPlan(array $attributes = array())
+    public function getNewPaypalPlan(array $attributes = array()/*, $sync = TRUE*/)
     {
 
         $paypalPlan = new PaypalPlan;
@@ -261,7 +261,7 @@ class Plan extends Model
      *
      * @todo Handle errors
      * @param Paypal\Rest\ApiContext
-     * @return Paypal\Api\Plan
+     * @return Beyond\PaypalCashier\Plan
      */
     public function createPlan($apiContext)
     {
@@ -273,6 +273,9 @@ class Plan extends Model
 
         // fillin attributes and save into database.
         $this->fill($attributes)->save();
+
+        // renew sdkPlan
+        $this->setSdkPlan($plan);
 
         return $this;
     }
