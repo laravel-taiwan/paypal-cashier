@@ -148,24 +148,43 @@ use Beyond\PaypalCashier\Transformers\SubscriptionTransformer;
      }
 
      /**
+      * Initialize a new Beyond\PaypalCashier\Subscription.
+      *
+      * @todo 思考一下是否要設定
+      * @param array $attributes
+      * @return Beyond\PaypalCashier\Plan
+      */
+     public function newSubscription(array $attributes = array())
+     {
+         // 取得新的 Paypal\Api\Agreement
+         $agreement = $this->getNewPaypalSubscription($attributes);
+
+         $paypalSubscription = $this->newInstance($attributes);
+
+         $paypalSubscription->setSdkSubscription($agreement);
+
+         return $paypalSubscription;
+     }
+
+     /**
       * Get Paypal agreement id.
       *
       * @return string $id
       */
-//     public function getId()
-//     {
-//         return $this->getSdkSubscription()->getId();
-//     }
+     public function getId()
+     {
+         return $this->getSdkSubscription()->getId();
+     }
 
      /**
       * Set Paypal agreement id.
       *
       * @param string $id
       */
-//     public function setId($id)
-//     {
-//        $this->getSdkSubscription()->setId($id);
-//     }
+     public function setId($id)
+     {
+        $this->getSdkSubscription()->setId($id);
+     }
 
      /**
       * Get the name of the agreement.
@@ -302,11 +321,24 @@ use Beyond\PaypalCashier\Transformers\SubscriptionTransformer;
      /**
       * Get subscription by id.
       *
-      *
+      * @param Paypal\Api\ApiContext
+      * @param string $id
+      * @return Beyond\PaypalCashier\Subscription
       */
-     public function getSubscription($apiContext)
+     public function getBySubscriptionId($id, $apiContext)
      {
-        
+
+        // 使用 Paypal\Api\Subscription 中的 static method get.
+        $sdkSubscription = forward_static_call_array([$this->getSdkSubscription(), 'get'], [$id, $apiContext]);
+
+        // 統一屬性資料
+        $attributes = SubscriptionTransformer::transform($sdkSubscription);
+
+        $paypalSubscription  = $this->newSubscription($attributes);
+
+        $paypalSubscription->setSdkSubscription($sdkSubscription);
+
+        return $paypalSubscription;
      }
  }
 

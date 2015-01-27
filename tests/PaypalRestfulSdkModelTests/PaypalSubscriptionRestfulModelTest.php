@@ -23,7 +23,7 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
     protected $samplePlanId = 'P-53R82169JN2163459DQ4RFBY';
 
     /**
-     * Sample subscription id. All
+     * Sample subscription id. All manipulations will be targeted towards this agreement.
      */
     protected $sampleSubscriptionId = 'I-VELLH556AAXL';
 
@@ -203,22 +203,27 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
         $subscription = $subscription->createSubscription($apiContext);
 
-        var_dump($subscription);
-        die;
         $count = DB::table('paypal_agreements')->where('name', 'sample agreement')->count();
 
         $this->assertEquals(1, $count);
     }
 
     /**
+     * Test get agreement by uid
      *
-     *
-     *
+     * @todo the outcome of getName method is null. check later.
+     * Tests:
+     *      1. makesure agreement uid matches
      */
-    public function test_create_sample_plan()
+    public function test_get_agreement()
     {
-        // 建立一個新
+
+        $apiContext = $this->apiContextProvider();
+
+        $subscription = new Subscription();
+
+        $subscription = $subscription->getBySubscriptionId($this->sampleSubscriptionId, $apiContext);
+
+        $this->assertEquals($this->sampleSubscriptionId, $subscription->getId());
     }
-
-
 }
