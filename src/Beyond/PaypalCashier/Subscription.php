@@ -304,9 +304,9 @@ use Beyond\PaypalCashier\Transformers\SubscriptionTransformer;
       *
       *
       */
-//     public function getSubscription()
-//     {
-//
-//     }
+     public function getSubscription($apiContext)
+     {
+        
+     }
  }
 
