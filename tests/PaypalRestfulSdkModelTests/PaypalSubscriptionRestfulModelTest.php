@@ -22,6 +22,11 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
      */
     protected $samplePlanId = 'P-53R82169JN2163459DQ4RFBY';
 
+    /**
+     * Sample subscription id. All
+     */
+    protected $sampleSubscriptionId = 'I-VELLH556AAXL';
+
     public function setUp()
     {
         parent::setUp();
@@ -198,6 +203,8 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
         $subscription = $subscription->createSubscription($apiContext);
 
+        var_dump($subscription);
+        die;
         $count = DB::table('paypal_agreements')->where('name', 'sample agreement')->count();
 
         $this->assertEquals(1, $count);
@@ -208,10 +215,10 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
      *
      *
      */
-//    public function test_create_sample_plan()
-//    {
-//
-//    }
+    public function test_create_sample_plan()
+    {
+        // 建立一個新
+    }
 
 
 }
