@@ -29,6 +29,7 @@ class WebhookController extends Controller
 	protected $request;
 
 	protected $logFilename = '/logs/ipn_logs.log';
+	// protected $logFilename = '/ipn_logs.log';
 
 	public function __construct()
 	{
@@ -52,6 +53,7 @@ class WebhookController extends Controller
 	 */ 
 	public function handleWebhook()
 	{	
+
 		$this->logResult();
 		// 取得 array 格式的 ipn message
 		$payload = $this->getPayload('array');
@@ -197,6 +199,8 @@ class WebhookController extends Controller
 	protected function writeResult($content)
 	{
 		$path = storage_path().$this->logFilename;
+
+		// $path = public_path().$this->logFilename;
 
 		try {
 

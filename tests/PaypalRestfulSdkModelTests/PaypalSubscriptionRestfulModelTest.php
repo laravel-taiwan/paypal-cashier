@@ -13,6 +13,7 @@ use PayPal\Api\CreditCard;
 use PayPal\Api\FundingInstrument;
 use PayPal\Api\ShippingAddress;
 use Paypal\Api\Agreement;
+use Paypal\Api\Links;
 use Carbon\Carbon;
 
 class PaypalSubscriptionRestfulModelTest extends TestCase
@@ -172,6 +173,18 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
     }
 
+    public function test_get_plan()
+    {
+        $apiContext = $this->apiContextProvider();
+
+        $plan = new Plan;
+
+        $plan = $plan->getByPlanId($this->samplePlanId, $apiContext);
+
+        var_dump($plan);
+        die;
+    }
+
     /**
      * 提示：
      *  1. paypal sandbox 在建立新的 agreement 時常會失敗 (internal server error 500).
@@ -203,9 +216,50 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
         $subscription = $subscription->createSubscription($apiContext);
 
-        $count = DB::table('paypal_agreements')->where('name', 'sample agreement')->count();
+        var_dump($subscription->getSdkSubscription()->getApprovalLink());
+        die;
 
-        $this->assertEquals(1, $count);
+//        $count = DB::table('paypal_agreements')->where('name', 'sample agreement')->count();
+//
+//        $this->assertEquals(1, $count);
+    }
+
+    /**
+     * Test execute an agreement.
+     *
+     *
+     */
+    public function test_execute_an_agreement()
+    {
+        // create 一個新的 subscription.
+//        $apiContext = $this->apiContextProvider();
+//        $plan = $this->planProvider();
+//        $payer = $this->payerProvider();
+//        $shippingAddress = $this->shippingAddressProvider();
+
+
+//        $subscription = new Subscription([
+//            'name'          =>  'sample agreement',
+//            'description'   =>  'sample description',
+//            'start_date'    =>  Carbon::now()->addDay()->format('Y-m-d\TH:i:s\Z')
+//        ]);
+
+//        $subscription->setPlan($plan);
+//        $subscription->setPayer($payer);
+//        $subscription->setShippingAddress($shippingAddress);
+
+        // initialize Paypal\Api\Links
+//        $approval_link  = new Links();
+//        $approval_link->setHref('');
+
+
+//        $subscription = $subscription->createSubscription($apiContext);
+
+
+//        $links = new Links();
+//        $links->setHref();
+
+        // setup redirect url
     }
 
     /**
@@ -224,6 +278,42 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
         $subscription = $subscription->getBySubscriptionId($this->sampleSubscriptionId, $apiContext);
 
-        $this->assertEquals($this->sampleSubscriptionId, $subscription->getId());
+        var_dump($subscription->getSdkSubscription()->getApprovalLink());
+        die;
+
+//        $this->assertEquals($this->sampleSubscriptionId, $subscription->getId());
+    }
+
+    public function test_parse_ipn_message()
+    {
+        $msg = 'payment_cycle=every+2+Months&txn_type=recurring_payment_profile_created&last_name=Shopper&initial_payment_status=Completed&next_payment_date=02%3A00%3A00+Jan+30%2C+2015+PST&residence_country=US&initial_payment_amount=1.00&currency_code=USD&time_created=21%3A42%3A21+Jan+28%2C+2015+PST&verify_sign=AgR5nWP4yUEpbgjsP604CIBg.1SKABaqxKf6OIqcWOCmW7osNcVEXzNU&period_type=+Regular&payer_status=unverified&test_ipn=1&tax=0.00&payer_email=huangchiheng%40gmail.com&first_name=Joe&receiver_email=huangc770216%40163.com&payer_id=8H64M5VGUE6H8&product_type=1&initial_payment_txn_id=3V93406267343630R&shipping=10.00&amount_per_cycle=110.00&profile_status=Active&charset=windows-1252&notify_version=3.8&amount=110.00&outstanding_balance=0.00&recurring_payment_id=I-KRHKU9GKCYNY&product_name=sample+description&ipn_track_id=98a4afd1062ba';
+
+        $parsedArr = $this->parseIpn($msg);
+
+        var_dump($parsedArr);
+
+    }
+
+    public function parseIpn($content)
+    {
+        if($content !== '')
+        {
+            $_str = urldecode($content);
+
+            $_arr = explode('&', $_str);
+
+            $responseArr = [];
+
+            foreach($_arr as $key=>$value)
+            {
+                $_temp = explode('=', $value);
+
+                $_trimmedKey = trim($_temp[0]);
+
+                $responseArr[$_trimmedKey] = $_temp[1];
+            }
+        }
+
+        return $responseArr;
     }
 }
