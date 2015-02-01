@@ -24,7 +24,11 @@ class PaypalCashierServiceProvider extends ServiceProvider
 	 */ 
 	public function boot()
 	{
+//        var_dump(file_exists(__DIR__.'/../../routes.php'));
+//        die;
 		$this->package('beyond/paypal-cashier');
+
+        include __DIR__.'/../../routes.php';
 	}
 
     protected function registerPlanRepository()
