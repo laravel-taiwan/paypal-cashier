@@ -248,6 +248,16 @@ class Plan extends Model
     }
 
     /**
+     * Get array of instance PayPal\Api\Links
+     *
+     * @return array
+     */
+    public function getLinks()
+    {
+        return $this->getSdkPlan()->getLinks();
+    }
+
+    /**
      * Create a new plan.
      *
      * $plan = new Plan([...]); // new Plan instance
