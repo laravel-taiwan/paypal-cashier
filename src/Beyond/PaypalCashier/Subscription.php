@@ -45,7 +45,7 @@ use Beyond\PaypalCashier\Transformers\SubscriptionTransformer;
       *
       * @var string
       */
-    protected $table = "paypal_agreements";
+    protected $table = "paypal_subscription";
 
      /**
       * Instance of Paypal\Api\Agreement.
@@ -286,6 +286,21 @@ use Beyond\PaypalCashier\Transformers\SubscriptionTransformer;
      }
 
      /**
+      * Get links.
+      *
+      * @return
+      */
+     public function getLinks()
+     {
+        return $this->getSdkSubscription()->getLinks();
+     }
+
+     public function getState()
+     {
+         return $this->getSdkSubscription()->getState();
+     }
+
+     /**
       * Create subscription.
       *
       * $subscription = new Subscription([
@@ -298,6 +313,8 @@ use Beyond\PaypalCashier\Transformers\SubscriptionTransformer;
       * $subscription->setPayer($payer);
       * $subscription->createSubscription($apiContext);
       *
+      * 在 Agreement 建立好的那一刻，其 state 就已經為 Active。不需要再另外 activate
+      *
       *
       * @param PayPal\Rest\ApiContext
       * @return Beyond\PaypalCashier\Subscription
@@ -308,6 +325,7 @@ use Beyond\PaypalCashier\Transformers\SubscriptionTransformer;
 
         // 先將 Agreement 跟 Subscription 的格式統一
         $attributes = SubscriptionTransformer::transform($agreement);
+
 
         // 將此 instance 使用 $attributes 初始化
         $this->fill($attributes);
