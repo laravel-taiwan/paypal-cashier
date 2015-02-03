@@ -15,19 +15,23 @@ class CreatePaypalSubscription extends Migration {
 		Schema::create('paypal_subscription', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('customer_id')->nullable();
-			$table->string('title');
-			$table->string('slug')->nullable();
-			$table->string('name')->nullable();
-			$table->string('desc')->nullable();
-			$table->string('profileId')->nullable();
-			$table->string('profileStatus')->nullable();
-			$table->string('transactionId')->nullable();
-			$table->string('timeStamp')->nullable();
-			$table->string('correlationId')->nullable();
-			$table->string('ack')->nullable();
-			$table->string('version')->nullable();
-			$table->string('build')->nullable();
+            $table->string('subscription_id')->nullable();
+            $table->string('name');
+            $table->string('description');
+            $table->string('start_date');
+//			$table->integer('customer_id')->nullable();
+//			$table->string('title');
+//			$table->string('slug')->nullable();
+//			$table->string('name')->nullable();
+//			$table->string('desc')->nullable();
+//			$table->string('profileId')->nullable();
+//			$table->string('profileStatus')->nullable();
+//			$table->string('transactionId')->nullable();
+//			$table->string('timeStamp')->nullable();
+//			$table->string('correlationId')->nullable();
+//			$table->string('ack')->nullable();
+//			$table->string('version')->nullable();
+//			$table->string('build')->nullable();
 			$table->timestamps();
 		});
 	}
