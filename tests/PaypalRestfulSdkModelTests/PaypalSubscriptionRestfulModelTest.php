@@ -37,7 +37,7 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
     protected function migrateSubscription()
     {
-        Schema::create('paypal_agreements', function (Blueprint $table) {
+        Schema::create('paypal_subscription', function (Blueprint $table) {
             $table->increments('id');
             $table->string('subscription_id');
             $table->string('name');
@@ -51,7 +51,7 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
     {
         parent::tearDown();
 
-        Schema::drop('paypal_agreements');
+        Schema::drop('paypal_subscription');
     }
 
     /**
@@ -132,10 +132,10 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
     {
         $creditCard = new CreditCard();
         $creditCard->setType('visa')
-            ->setNumber('4417119669820331')
-            ->setExpireMonth('12')
-            ->setExpireYear('2017')
-            ->setCvv2('128');
+            ->setNumber('4032032107556109')
+            ->setExpireMonth('01')
+            ->setExpireYear('2020')
+            ->setCvv2('123');
 
         return $creditCard;
     }
@@ -216,50 +216,12 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
         $subscription = $subscription->createSubscription($apiContext);
 
-        var_dump($subscription->getSdkSubscription()->getApprovalLink());
-        die;
+//        var_dump($subscription->getSdkSubscription()->getLinks());
+//        die;
 
-//        $count = DB::table('paypal_agreements')->where('name', 'sample agreement')->count();
-//
-//        $this->assertEquals(1, $count);
-    }
+        $count = DB::table('paypal_agreements')->where('name', 'sample agreement')->count();
 
-    /**
-     * Test execute an agreement.
-     *
-     *
-     */
-    public function test_execute_an_agreement()
-    {
-        // create 一個新的 subscription.
-//        $apiContext = $this->apiContextProvider();
-//        $plan = $this->planProvider();
-//        $payer = $this->payerProvider();
-//        $shippingAddress = $this->shippingAddressProvider();
-
-
-//        $subscription = new Subscription([
-//            'name'          =>  'sample agreement',
-//            'description'   =>  'sample description',
-//            'start_date'    =>  Carbon::now()->addDay()->format('Y-m-d\TH:i:s\Z')
-//        ]);
-
-//        $subscription->setPlan($plan);
-//        $subscription->setPayer($payer);
-//        $subscription->setShippingAddress($shippingAddress);
-
-        // initialize Paypal\Api\Links
-//        $approval_link  = new Links();
-//        $approval_link->setHref('');
-
-
-//        $subscription = $subscription->createSubscription($apiContext);
-
-
-//        $links = new Links();
-//        $links->setHref();
-
-        // setup redirect url
+        $this->assertEquals(1, $count);
     }
 
     /**
@@ -278,10 +240,9 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
         $subscription = $subscription->getBySubscriptionId($this->sampleSubscriptionId, $apiContext);
 
-        var_dump($subscription->getSdkSubscription()->getApprovalLink());
-        die;
+        $this->assertEquals('Active', $subscription->getState());
 
-//        $this->assertEquals($this->sampleSubscriptionId, $subscription->getId());
+        $this->assertEquals($this->sampleSubscriptionId, $subscription->getId());
     }
 
     public function test_parse_ipn_message()
