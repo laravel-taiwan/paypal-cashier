@@ -11,6 +11,9 @@ use PayPal\Api\Patch;
 use PayPal\Common\PayPalModel;
 
 /**
+ * @group PaypalCashier
+ * @author Bryan Huang
+ *
  * @todo touch database 的測試應該由 Beyond\PaypalCashier\Plan 來做此測試不應該動到 database
  */
 class PaypalPlanRepositoryTest extends TestCase
@@ -183,6 +186,12 @@ class PaypalPlanRepositoryTest extends TestCase
         return $plan;
     }
 
+    /**
+     * Test retrieve plan by Plan unique id.
+     *
+     * Tests:
+     *      1. Assert that the retrieved plan uid equals to that in DataBase.
+     */
     public function test_plan_repository_get_plan()
     {
         $repo = $this->planRepositoryProvider();
@@ -194,6 +203,12 @@ class PaypalPlanRepositoryTest extends TestCase
         $this->assertEquals($createdPlan->getId(), $plan->getId());
     }
 
+    /**
+     * Test update plan to Active state.
+     *
+     * Tests:
+     *      1. Assert that the state of the created plan has been updated to "Active" state.
+     */
     public function test_plan_repository_update_plan()
     {
         $repo = $this->planRepositoryProvider();
@@ -215,23 +230,16 @@ class PaypalPlanRepositoryTest extends TestCase
 
         $repo->updatePlan($createdPlan, $patchRequest);
 
+        $this->assertEquals($createdPlan->getState(), 'ACTIVE');
 
     }
 
-    public function test_dynamic_method()
+    public function __test_dynamic_method()
     {
         $dummy = new Dummy;
 
         $method = 'Dummy';
 //        $_needs = $this->{"get{$action}Needs"}($options);
         var_dump($dummy->{"set{$method}"}());
-    }
-}
-
-class Dummy
-{
-    public function setDummy()
-    {
-        return 'dummy';
     }
 }

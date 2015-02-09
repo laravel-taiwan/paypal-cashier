@@ -2,6 +2,10 @@
 
 use Beyond\PaypalCashier\ApiContextGenerator;
 
+/**
+ * @author Bryan Huang
+ * @group PaypalCashier
+ */
 class ApiContextGeneratorTest extends TestCase
 {
     public function test_generate_api_context_instance()
