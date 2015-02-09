@@ -22,6 +22,8 @@ class PaypalPlanRepositoryTest extends TestCase
     {
         parent::setUp();
 
+        $this->app->register('Beyond\PaypalCashier\PaypalCashierServiceProvider');
+
         $this->migratePaypalPlansTable();
     }
 
