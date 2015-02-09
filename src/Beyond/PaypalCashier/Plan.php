@@ -238,6 +238,16 @@ class Plan extends Model
     }
 
     /**
+     * Set Paypal plan id.
+     *
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->getSdkPlan()->setId($id);
+    }
+
+    /**
      * Get the state of current plan.
      *
      * @return string
