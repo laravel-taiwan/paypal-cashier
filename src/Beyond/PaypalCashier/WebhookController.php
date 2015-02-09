@@ -14,6 +14,10 @@
 | 1. handlePending	 -	用來處理 pending transaction
 | 2. handleReversed	 - 	用來處理 reversed transaction
 | 3. handleCompleted - 	用來處理 completed transaction
+---------------------------------------
+| todo:
+| 1. verify ipn message. Ipn message format: https://developer.paypal.com/docs/classic/ipn/integration-guide/IPNandPDTVariables/#id091EB080EYK
+|
 */
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Filesystem\Filesystem;
@@ -29,6 +33,7 @@ class WebhookController extends Controller
 	protected $request;
 
 	protected $logFilename = '/logs/ipn_logs.log';
+	// protected $logFilename = '/ipn_logs.log';
 
 	public function __construct()
 	{
@@ -52,6 +57,7 @@ class WebhookController extends Controller
 	 */ 
 	public function handleWebhook()
 	{	
+
 		$this->logResult();
 		// 取得 array 格式的 ipn message
 		$payload = $this->getPayload('array');
@@ -197,6 +203,8 @@ class WebhookController extends Controller
 	protected function writeResult($content)
 	{
 		$path = storage_path().$this->logFilename;
+
+		// $path = public_path().$this->logFilename;
 
 		try {
 

@@ -1,7 +1,6 @@
 <?php
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Post\PostFile;
 
 class PaypalCreditCardTokenApiTest extends TestCase
 {
@@ -139,18 +138,18 @@ class PaypalCreditCardTokenApiTest extends TestCase
 	 * 
 	 * @dataProvider guzzleClientProvider
 	 */
-	public function testPaypalStoreAndGetCreditCardTokenApi($client)
+	public function test_paypal_store_and_get_credit_card_token_api($client)
 	{
 
-		$_accessToken = $this->getAccessToken($client);
+		$accessToken = $this->getAccessToken($client);
 
 		// var_dump($_accessToken);
 
 		$request = $client->createRequest('POST', 'https://api.sandbox.paypal.com/v1/vault/credit-card', [
-			// 'auth' =>  ['ASExehBlunSTszcSEhc__w7P81AFACksp2WaMZ1u0LlB6TCpDF6j8whNZLed', 'EOvU8hB8XRJzfdwDYzJ6m-nZnWpmXgpQktqYIEfbvFi4VuPW8JXylxMKF7fU'],
+
 			'headers'	=>	[
 				'Content-Type'	=>	'application/json',
-				'Authorization'	=>	"Bearer {$_accessToken}",
+				'Authorization'	=>	"Bearer {$accessToken}",
 			],
 
 			'json'	=>	[
@@ -181,8 +180,8 @@ class PaypalCreditCardTokenApiTest extends TestCase
 
 		$response_arr =json_decode( $response->getBody()->getContents(), true );
 
-		// var_dump($response_arr);
-		// die;
+		 var_dump($response_arr);
+		 die;
 		$_creditCardId = $response_arr['id'];
 		// var_dump($response_arr); 
 

@@ -14,7 +14,7 @@ class PaypalCashierServiceProvider extends ServiceProvider
 	{
 		// bind share BillableInterface
 		$this->registerEloquentBillableRepository();
-
+        $this->registerPlanRepository();
 	}
 
 	/**
@@ -24,8 +24,28 @@ class PaypalCashierServiceProvider extends ServiceProvider
 	 */ 
 	public function boot()
 	{
+//        var_dump(file_exists(__DIR__.'/../../routes.php'));
+//        die;
 		$this->package('beyond/paypal-cashier');
+
+        include __DIR__.'/../../routes.php';
 	}
+
+    protected function registerPlanRepository()
+    {
+        $this->app->bindShared('Beyond\PaypalCashier\PlanRepository', function($app){
+
+            $client_id = $app['config']->get('paypal-cashier::credentials.client_id');
+
+            $client_secret = $app['config']->get('paypal-cashier::credentials.client_secret');
+
+            $apiContextConfig = $app['config']->get('paypal-cashier::api_context_settings');
+
+            $apiContext = ApiContextGenerator::make($client_id, $client_secret, $apiContextConfig);
+
+            return new PlanRepository(new Plan ,$apiContext, $apiContextConfig);
+        });
+    }
 
 	protected function registerEloquentBillableRepository()
 	{
