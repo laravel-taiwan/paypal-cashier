@@ -251,9 +251,15 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
         $subscription = $subscription->createSubscription($apiContext);
 
-        $count = DB::table('paypal_subscription')->where('name', 'sample agreement')->count();
+        $subscriptions = DB::table('paypal_subscription')->where('name', 'sample agreement');
 
-        $this->assertEquals(1, $count);
+        // 
+        $this->assertEquals(1, $subscriptions->count());
+
+        $this->sampleSubscriptionId = $subscriptions->first()->subscription_id;
+
+        // Check subscription exists from paypal server
+        $this->test_get_agreement();
     }
 
     public function __test_create_billing_agreement_2()
