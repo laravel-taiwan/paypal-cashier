@@ -209,11 +209,18 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
         $plan = $plan->getByPlanId($this->samplePlanId, $apiContext);
 
-        var_dump($plan);
-        die;
+//        var_dump($plan);
+//        die;
     }
 
     /**
+     * Test create new billing agreement.
+     *
+     * Tests:
+     *      1. Test create new agreement.
+     *
+     * @group PaypalCashier
+     *
      * 提示：
      *  1. paypal sandbox 在建立新的 agreement 時常會失敗 (internal server error 500).
      *  2. 在建立新的 agreement 時要注意 start_date 不能是當前時間，最快也要是當前時間加上 1 天.
@@ -244,15 +251,12 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
         $subscription = $subscription->createSubscription($apiContext);
 
-//        var_dump($subscription->getSdkSubscription()->getLinks());
-//        die;
-
         $count = DB::table('paypal_subscription')->where('name', 'sample agreement')->count();
 
         $this->assertEquals(1, $count);
     }
 
-    public function test_create_billing_agreement_2()
+    public function __test_create_billing_agreement_2()
     {
         // need to prepare
         // 1. payer
@@ -290,8 +294,8 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
         $subscription = $subscription->createSubscription($apiContext);
 
-        var_dump($subscription->getSdkSubscription());
-        die;
+//        var_dump($subscription->getSdkSubscription());
+//        die;
 //        $count = DB::table('paypal_subscription')->where('name', 'sample agreement')->count();
 //
 //        $this->assertEquals(1, $count);
@@ -299,7 +303,9 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
 
     /**
-     * Test get agreement by uid
+     * Test get agreement by uid.
+     *
+     * @group PaypalCashier
      *
      * @todo the outcome of getName method is null. check later.
      * Tests:
@@ -327,7 +333,7 @@ class PaypalSubscriptionRestfulModelTest extends TestCase
 
         $parsedArr = $this->parseIpn($msg);
 
-        var_dump($parsedArr);
+//        var_dump($parsedArr);
 
     }
 
