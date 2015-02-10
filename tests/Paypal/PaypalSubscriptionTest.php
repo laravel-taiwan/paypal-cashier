@@ -1,6 +1,6 @@
 <?php
 
-use Beyond\Module\Cashier\PaypalCashier\Subscription;
+use Beyond\PaypalCashier\Subscription;
 use GuzzleHttp\Client;
 
 class PaypalSubscriptionTest extends TestCase

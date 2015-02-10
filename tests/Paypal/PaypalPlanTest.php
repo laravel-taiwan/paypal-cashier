@@ -1,6 +1,6 @@
 <?php
 
-use Beyond\Module\Cashier\PaypalCashier\Plan;
+use Beyond\PaypalCashier\Plan;
 
 /*
 | paypal plan
