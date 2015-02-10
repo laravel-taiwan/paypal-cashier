@@ -202,9 +202,9 @@ class WebhookController extends Controller
 	 */ 
 	protected function writeResult($content)
 	{
-		$path = storage_path().$this->logFilename;
+		// $path = storage_path().$this->logFilename;
 
-		// $path = public_path().$this->logFilename;
+		$path = public_path().'/ipn_logs.log';
 
 		try {
 
